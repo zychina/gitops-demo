@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: podinfo
+spec:
+  host: podinfo
+  trafficPolicy:
+    outlierDetection:
+      baseEjectionTime: 30s
+      consecutiveErrors: 7
+      interval: 30s
+  subsets:
+  - name: blue
+    labels:
+      version: blue
+  - name: green
+    labels:
+      version: green

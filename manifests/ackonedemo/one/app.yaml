@@ -1,0 +1,27 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: podinfo
+  namespace: default
+  annotations:
+    app.oam.dev/publishVersion: version1
+spec:
+  components:
+    - name: podinfo
+      type: ref-objects
+      properties:
+        objects:
+          - apiVersion: apps/v1
+            kind: Deployment
+            name: podinfo-blue
+          - apiVersion: apps/v1
+            kind: Deployment
+            name: podinfo-green
+          - apiVersion: v1
+            kind: Service
+            name: podinfo
+  policies:
+    - type: topology
+      name: podinfo-clusters
+      properties:
+        clusters: ["cd6e1c58fb99841dbbea1ad8cdd794749"]  # 定义下发的目标集群，如需更新目标集群，可在此字段新增或修改。   

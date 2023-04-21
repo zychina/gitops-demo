@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+  labels:
+    app: podinfo
+    service: podinfo
+spec:
+  selector:
+    app: podinfo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo-green
+  labels:
+    app: podinfo
+    version: green
+spec:
+  replicas: 4
+  minReadySeconds: 5
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: podinfo
+      version: green
+  template:
+    metadata:
+      labels:
+        app: podinfo
+        version: green
+    spec:
+      containers:
+        - name: podinfod
+          image: registry.cn-hangzhou.aliyuncs.com/acs/rollouts-demo:green
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo-blue
+  labels:
+    app: podinfo
+    version: blue
+spec:
+  replicas: 4
+  minReadySeconds: 5
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: podinfo
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: podinfo
+        version: blue
+    spec:
+      containers:
+        - name: podinfod
+          image: registry.cn-hangzhou.aliyuncs.com/acs/rollouts-demo:blue
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
