@@ -4,5 +4,5 @@ helm:
     value: registry.cn-hongkong.aliyuncs.com/ackone/echo-server
     forcestring: true
   - name: image.tag
-    value: v1.0
+    value: v2.0
     forcestring: true
